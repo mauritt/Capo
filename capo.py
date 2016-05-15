@@ -36,7 +36,7 @@ def extract_flavors(location, html):
     return flavor_info
 
 def get_location_flavor(location):
-    """Returns a locations daily flavor list as a dict"""
+    """Returns a location's daily flavor list as a dict"""
     flavor_html = get_flavor_html(location)
     flavors = extract_flavors(location,flavor_html)
     return flavors
