@@ -20,7 +20,7 @@ def get_flavor_html(location):
 
 def extract_flavors(location, html):
     """Takes HTML and returns dictionary flavor info"""
-    flavor_info = {location:{}}
+    flavor_info = {}
 
     soup = BeautifulSoup(html,'html.parser')
 
@@ -31,9 +31,17 @@ def extract_flavors(location, html):
             flavor_description = flavor.contents[1].contents[0].contents[0]
         except:
             flavor_description = None
-        flavor_info[location][flavor_name] = flavor_description
+        flavor_info[flavor_name] = flavor_description
 
     return flavor_info
+
+def get_location_flavor(location):
+    """Returns a locations daily flavor list as a dict"""
+    flavor_html = get_flavor_html(location)
+    flavors = extract_flavors(location,flavor_html)
+    return flavors
+
+
 
 
 if __name__ == '__main__':
