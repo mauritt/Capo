@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 from capo_locations import locations
 
 
@@ -16,3 +17,24 @@ def get_flavor_html(location):
         return flavor_html.text
     else:
         return None
+
+def extract_flavors(location, html):
+    """Takes HTML and returns dictionary flavor info"""
+    flavor_info = {location:{}}
+
+    soup = BeautifulSoup(html,'html.parser')
+
+    flavors = soup.find_all('td','flavorbox')
+    for flavor in flavors:
+        flavor_name = flavor.contents[0].contents[0]
+        try:
+            flavor_description = flavor.contents[1].contents[0].contents[0]
+        except:
+            flavor_description = None
+        flavor_info[location][flavor_name] = flavor_description
+
+    return flavor_info
+
+
+if __name__ == '__main__':
+    pass
