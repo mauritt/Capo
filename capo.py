@@ -1,16 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
-from capo_locations import locations
 
 
 CAPO_URL = 'http://www.capogirogelato.com/flavors.php'
+location_numbers = {}
+location_numbers['13th Street'] = '1'
+location_numbers['Rittenhouse'] = '2'
+location_numbers['CapoYunk'] = '3'
+location_numbers['CapoPenn'] = '4'
+
 
 def get_flavor_html(location):
     """Returns a location's daily flavor list HTML."""
-    if not location in locations:
+    if not location in location_numbers.keys():
         return None
 
-    payload = {'location': locations[location]['number']}
+    payload = {'location': location_numbers[location]}
     flavor_html = requests.get(CAPO_URL,params = payload)
     
     if flavor_html.status_code == 200:
@@ -35,7 +40,7 @@ def extract_flavors(location, html):
 
     return flavor_info
 
-def get_location_flavor(location):
+def get_location_flavors(location):
     """Returns a location's daily flavor list as a dict"""
     flavor_html = get_flavor_html(location)
     flavors = extract_flavors(location,flavor_html)
