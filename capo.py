@@ -46,6 +46,12 @@ def get_location_flavors(location):
     flavors = extract_flavors(location,flavor_html)
     return flavors
 
+def get_daily_flavors():
+    """Returns dict of locations : flavors available today."""
+    daily_flavors = {}
+    for location in location_numbers.keys():
+        daily_flavors[location] = get_location_flavors(location)
+    return daily_flavors
 
 
 
