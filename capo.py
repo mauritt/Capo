@@ -10,6 +10,7 @@ location_numbers['CapoYunk'] = '3'
 location_numbers['CapoPenn'] = '4'
 
 def locations():
+    """Print location names"""
     for location in locations.keys():
         print(location)
 
