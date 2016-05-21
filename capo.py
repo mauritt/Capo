@@ -9,6 +9,9 @@ location_numbers['Rittenhouse'] = '2'
 location_numbers['CapoYunk'] = '3'
 location_numbers['CapoPenn'] = '4'
 
+def locations():
+    for location in locations.keys():
+        print(location)
 
 def get_flavor_html(location):
     """Returns a location's daily flavor list HTML."""
@@ -52,8 +55,3 @@ def get_daily_flavors():
     for location in location_numbers.keys():
         daily_flavors[location] = get_location_flavors(location)
     return daily_flavors
-
-
-
-if __name__ == '__main__':
-    pass
