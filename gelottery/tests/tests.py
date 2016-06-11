@@ -53,6 +53,7 @@ class FlavorTest(unittest.TestCase):
                         mock_soup('flavorheadwhite'),
                         mock_soup('flavorhead'),
                         mock_soup('flavorcap'),
+                        mock_soup('flavorhead'),
         ]
 
         mock_html = '<html>Test</html>'
@@ -64,6 +65,7 @@ class FlavorTest(unittest.TestCase):
                               'Name': 'Description',
                               'Name': None,
                               'Name': 'Description',
+                              'Name': None
         }
 
         with mock.patch('flavors.SoupStrainer') as strainer:
