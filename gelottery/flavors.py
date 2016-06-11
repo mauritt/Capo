@@ -46,7 +46,7 @@ def extract_flavors(loaction,html):
             flavor_name = span[num].string
             num+=1
 
-            if 'flavorcap' in span[num]['class']:
+            if num < len(span) and 'flavorcap' in span[num]['class']:
                 flavor_cap = span[num].string
                 num += 1
             else:
