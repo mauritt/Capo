@@ -11,7 +11,7 @@ location_numbers['CapoPenn'] = '4'
 
 def locations():
     """Print location names"""
-    for location in location_numbers.keys():
+    for location in sorted(location_numbers.keys()):
         print(location)
 
 def get_flavor_html(location):
