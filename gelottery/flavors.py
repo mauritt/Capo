@@ -66,6 +66,6 @@ def get_location_flavors(location):
 def get_daily_flavors():
     """Returns dict of locations : flavors available today."""
     daily_flavors = {}
-    for location in location_numbers.keys():
+    for location in sorted(location_numbers.keys()):
         daily_flavors[location] = get_location_flavors(location)
     return daily_flavors
