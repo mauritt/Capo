@@ -5,6 +5,23 @@ from io import StringIO
 from unittest import mock
 import flavors
 
+class mock_soup():
+
+    def __init__(self, span_class):
+        self.span_class = span_class
+
+    @property
+    def string(self):
+        if 'flavorhead' in self.span_class:
+            return 'Name'
+        else:
+            return 'Description'
+    
+    def __getitem__(self,x):
+        return self.span_class    
+
+
+
 class FlavorTest(unittest.TestCase):
 
     @mock.patch('sys.stdout',new_callable=StringIO)
@@ -24,6 +41,49 @@ class FlavorTest(unittest.TestCase):
             self.assertEqual(flavors.get_flavor_html('13th Street'),'It worked!')
             get.assert_called_with(URL, params = payload)
 
+    def test_extract_flavors(self):
+        mock_flavors = [
+                        mock_soup('flavorhead'),
+                        mock_soup('flavorcap'),
+                        mock_soup('flavorheadwhite'),
+                        mock_soup('flavorcapwhite'),
+                        mock_soup('flavorhead'),
+                        mock_soup('flavorheadwhite'),
+                        mock_soup('flavorcapwhite'),
+                        mock_soup('flavorheadwhite'),
+                        mock_soup('flavorhead'),
+                        mock_soup('flavorcap'),
+        ]
+
+        mock_html = '<html>Test</html>'
+
+        expected_flavors = {
+                              'Name': 'Description',
+                              'Name': 'Description',
+                              'Name': None,
+                              'Name': 'Description',
+                              'Name': None,
+                              'Name': 'Description',
+        }
+
+        with mock.patch('flavors.SoupStrainer') as strainer:
+            with mock.patch('flavors.BeautifulSoup') as bs:
+                spans = mock.Mock()
+                spans.return_value = mock_flavors
+                bs.return_value = spans
+                
+
+                flavor_info = flavors.extract_flavors('13th Street',mock_html)
+                self.assertEqual(flavor_info,expected_flavors)
+                strainer.assert_called_with('span', ['flavorhead','flavorheadwhite', 'flavorcap', 'flavorcapwhite'])
+                spans.assert_called_with('span')    
+
+
+
+
+
+
+
     def test_get_location_flavors(self):
         with mock.patch('flavors.get_flavor_html') as get_flavor_html:
             get_flavor_html.return_value = '<html>Test</html>'
@@ -34,4 +94,29 @@ class FlavorTest(unittest.TestCase):
                 self.assertEqual(location_flavors,{'name':'description'})
                 get_flavor_html.assert_called_with('13th Street')
                 extract_flavors.assert_called_with('13th Street','<html>Test</html>')
+
+    def test_get_daily_flavors(self):
+        locations = ['13th Street', 'CapoPenn','CapoYunk','Rittenhouse']
+        test_dict = {}
+        calls = []
+        
+        for location in locations:
+            test_dict[location] = {'name':'description'}
+            calls.append(mock.call(location))
+        
+        with mock.patch('flavors.get_location_flavors') as get_location_flavors:
+            get_location_flavors.return_value = {'name':'description'}
+
+
+            flavors_today = flavors.get_daily_flavors()
+            self.assertEqual(flavors_today,test_dict)
+            get_location_flavors.assert_has_calls(calls)
+
+
+
+
+
+
+
+
 
