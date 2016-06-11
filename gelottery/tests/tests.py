@@ -23,3 +23,15 @@ class FlavorTest(unittest.TestCase):
             get.return_value = MockResponse
             self.assertEqual(flavors.get_flavor_html('13th Street'),'It worked!')
             get.assert_called_with(URL, params = payload)
+
+    def test_get_location_flavors(self):
+        with mock.patch('flavors.get_flavor_html') as get_flavor_html:
+            get_flavor_html.return_value = '<html>Test</html>'
+            
+            with mock.patch('flavors.extract_flavors') as extract_flavors:
+                extract_flavors.return_value = {'name':'description'}
+                location_flavors = flavors.get_location_flavors('13th Street')
+                self.assertEqual(location_flavors,{'name':'description'})
+                get_flavor_html.assert_called_with('13th Street')
+                extract_flavors.assert_called_with('13th Street','<html>Test</html>')
+
