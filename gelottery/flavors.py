@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 
 
 CAPO_URL = 'http://www.capogirogelato.com/flavors.php'
@@ -27,20 +27,33 @@ def get_flavor_html(location):
     else:
         return None
 
-def extract_flavors(location, html):
+def extract_flavors(loaction,html):
     """Takes HTML and returns dictionary flavor info"""
     flavor_info = {}
+    relevant_html_tags = [
+                            'flavorhead',
+                            'flavorheadwhite',
+                            'flavorcap',
+                            'flavorcapwhite'
+                        ]
+    only_span = SoupStrainer('span', relevant_html_tags)
+    soup = BeautifulSoup(html,'html.parser',parse_only=only_span)
+    span = soup('span')
+    num=0
 
-    soup = BeautifulSoup(html,'html.parser')
+    while num < len(span):
+        if 'flavorhead' in span[num]['class']:
+            flavor_name = span[num].string
+            num+=1
 
-    flavors = soup.find_all('td','flavorbox')
-    for flavor in flavors:
-        flavor_name = flavor.contents[0].contents[0]
-        try:
-            flavor_description = flavor.contents[1].contents[0].contents[0]
-        except:
-            flavor_description = None
-        flavor_info[flavor_name] = flavor_description
+            if 'flavorcap' in span[num]['class']:
+                flavor_cap = span[num].string
+                num += 1
+            else:
+                flavor_cap = None
+        else:
+            num +=1
+        flavor_info[flavor_name] = flavor_cap
 
     return flavor_info
 
