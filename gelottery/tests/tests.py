@@ -70,6 +70,7 @@ class FlavorTest(unittest.TestCase):
 
         with mock.patch('flavors.SoupStrainer') as strainer:
             with mock.patch('flavors.BeautifulSoup') as bs:
+                strainer.return_value = 'SoupStrainer Object'
                 spans = mock.Mock()
                 spans.return_value = mock_flavors
                 bs.return_value = spans
@@ -78,6 +79,7 @@ class FlavorTest(unittest.TestCase):
                 flavor_info = flavors.extract_flavors(mock_html)
                 self.assertEqual(flavor_info,expected_flavors)
                 strainer.assert_called_with('span', ['flavorhead','flavorheadwhite', 'flavorcap', 'flavorcapwhite'])
+                bs.assert_called_with(mock_html,'html.parser',parse_only='SoupStrainer Object')
                 spans.assert_called_with('span')    
 
 
