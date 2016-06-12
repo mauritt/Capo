@@ -27,7 +27,7 @@ def get_flavor_html(location):
     else:
         return None
 
-def extract_flavors(loaction,html):
+def extract_flavors(html):
     """Takes HTML and returns dictionary flavor info"""
     flavor_info = {}
     relevant_html_tags = [
@@ -60,7 +60,7 @@ def extract_flavors(loaction,html):
 def get_location_flavors(location):
     """Returns a location's daily flavor list as a dict"""
     flavor_html = get_flavor_html(location)
-    flavors = extract_flavors(location,flavor_html)
+    flavors = extract_flavors(flavor_html)
     return flavors
 
 def get_daily_flavors():

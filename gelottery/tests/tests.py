@@ -75,7 +75,7 @@ class FlavorTest(unittest.TestCase):
                 bs.return_value = spans
                 
 
-                flavor_info = flavors.extract_flavors('13th Street',mock_html)
+                flavor_info = flavors.extract_flavors(mock_html)
                 self.assertEqual(flavor_info,expected_flavors)
                 strainer.assert_called_with('span', ['flavorhead','flavorheadwhite', 'flavorcap', 'flavorcapwhite'])
                 spans.assert_called_with('span')    
@@ -95,7 +95,7 @@ class FlavorTest(unittest.TestCase):
                 location_flavors = flavors.get_location_flavors('13th Street')
                 self.assertEqual(location_flavors,{'name':'description'})
                 get_flavor_html.assert_called_with('13th Street')
-                extract_flavors.assert_called_with('13th Street','<html>Test</html>')
+                extract_flavors.assert_called_with('<html>Test</html>')
 
     def test_get_daily_flavors(self):
         locations = ['13th Street', 'CapoPenn','CapoYunk','Rittenhouse']
