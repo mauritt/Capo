@@ -51,9 +51,11 @@ def extract_flavors(html):
                 num += 1
             else:
                 flavor_cap = None
+
+            flavor_info[flavor_name] = flavor_cap   
         else:
             num +=1
-        flavor_info[flavor_name] = flavor_cap
+        
 
     return flavor_info
 
