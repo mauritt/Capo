@@ -68,5 +68,3 @@ def get_daily_flavors():
         daily_flavors[location] = get_location_flavors(location)
     return daily_flavors
 
-print(get_daily_flavors())
-
