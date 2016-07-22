@@ -1,6 +1,5 @@
 import requests
-from bs4 import BeautifulSoup, SoupStrainer
-
+import re
 
 CAPO_URL = 'http://www.capogirogelato.com/flavors.php'
 location_numbers = {}
@@ -29,33 +28,30 @@ def get_flavor_html(location):
 
 def extract_flavors(html):
     """Takes HTML and returns dictionary flavor info"""
+    
+    html = html.split('\n')
+
     flavor_info = {}
-    relevant_html_tags = [
-                            'flavorhead',
-                            'flavorheadwhite',
-                            'flavorcap',
-                            'flavorcapwhite'
-                        ]
-    only_span = SoupStrainer('span', relevant_html_tags)
-    soup = BeautifulSoup(html,'html.parser',parse_only=only_span)
-    span = soup('span')
-    num=0
 
-    while num < len(span):
-        if 'flavorhead' in span[num]['class']:
-            flavor_name = span[num].string
-            num+=1
+    span_pattern = r'<span class="%s\w*">([^>]+)</span>'
 
-            if num < len(span) and 'flavorcap' in span[num]['class']:
-                flavor_cap = span[num].string
-                num += 1
+    for line in html:
+        flavor_name_search = re.search(span_pattern % 'flavorhead', line)
+        
+        if flavor_name_search:
+
+            flavor_name = flavor_name_search.group(1)
+            flavor_caption_search = re.search(span_pattern % 'flavorcap', line)
+
+            if flavor_caption_search:
+                flavor_cap = flavor_caption_search.group(1)
             else:
                 flavor_cap = None
 
-            flavor_info[flavor_name] = flavor_cap   
+            flavor_info[flavor_name] = flavor_cap
+
         else:
-            num +=1
-        
+            pass
 
     return flavor_info
 
@@ -71,3 +67,6 @@ def get_daily_flavors():
     for location in sorted(location_numbers.keys()):
         daily_flavors[location] = get_location_flavors(location)
     return daily_flavors
+
+print(get_daily_flavors())
+

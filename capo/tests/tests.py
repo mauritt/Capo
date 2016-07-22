@@ -5,22 +5,6 @@ from io import StringIO
 from unittest import mock
 import flavors
 
-class mock_soup():
-
-    def __init__(self, span_class):
-        self.span_class = span_class
-
-    @property
-    def string(self):
-        if 'flavorhead' in self.span_class:
-            return 'Name'
-        else:
-            return 'Description'
-    
-    def __getitem__(self,x):
-        return self.span_class    
-
-
 
 class FlavorTest(unittest.TestCase):
 
@@ -42,50 +26,54 @@ class FlavorTest(unittest.TestCase):
             get.assert_called_with(URL, params = payload)
 
     def test_extract_flavors(self):
-        mock_flavors = [
-                        mock_soup('flavorhead'),
-                        mock_soup('flavorcap'),
-                        mock_soup('flavorheadwhite'),
-                        mock_soup('flavorcapwhite'),
-                        mock_soup('flavorhead'),
-                        mock_soup('flavorheadwhite'),
-                        mock_soup('flavorcapwhite'),
-                        mock_soup('flavorheadwhite'),
-                        mock_soup('flavorhead'),
-                        mock_soup('flavorcap'),
-                        mock_soup('flavorhead'),
-        ]
+                expected_flavors = {
+                "Pompelmo Rosso con Campari": 
+                    "Ruby Red Grapefruit with Campari",
+                "Fico D'India (Red)":
+                    "Cactus or prickly pears.  Tastes like a watermelon.",
+                "Stracciatella": 
+                    "Fior di latte with slivers of dark chocolate.",
+                "Fior Di Latte": 
+                    "Milk gelato.  Milk from an Amish family's single herd of hormone free, grass fed in Lancaster County.  Crazy good.",
+                "Carambola con Limone Verde":
+                    "Carambola (Star Fruit) with tart limes.",
+                "Pistacchio Siciliano":
+                    "The very best pistacchios from Sicily.  Not that horrific neon green kind, the amazing olive green kind.",
+                "Cioccolato Scuro": 
+                    "Rich, black and serious.",
+                "Mora Gelato": 
+                    "Lancaster County Blackberries.",
+                "Dulce De Leche": 
+                    "Our own decadent Argentine caramel swirled into Fior di Latte gelato.",
+                "Nocciola Piemontese": 
+                    "Hazelnut gelato made with nuts from the Piedmont region of Italy.  When this is your first choice, you have your Italian Citizenship.",
+                "Lemon": 
+                    "Classic lemon sorbetto.  Tart and refreshing.",
+                "Banana": 
+                    None,
+                "Thai Coconut Milk":
+                    "Sweet smooth coconut gelato made with coconut milk from Thailand and a hint of coconut rum.",
+                "Uva Rossa":
+                    "Tart red grapes.",
+                "Peanut Butter":
+                    "Peanut gelato layered with house roasted peanut butter.",
+                "Cappuccino": 
+                    "Made with La Colombe coffee.  Only the best.",
+                "Bacio": 
+                    None,
+                "Pecan": 
+                    "Pecans from Geogia.",
+                "Lime with Cilantro": 
+                    "Tart limes with the interesting herb, cilantro.  Our cilantro is from Landsdale, PA.",
+                "White Chocolate": 
+                    "Valhrona white chocolate.",
+                }
 
-        mock_html = '<html>Test</html>'
+                with open('tests/mocks/mock_flavors.html','r') as mock_html:
 
-        expected_flavors = {
-                              'Name': 'Description',
-                              'Name': 'Description',
-                              'Name': None,
-                              'Name': 'Description',
-                              'Name': None,
-                              'Name': 'Description',
-                              'Name': None
-        }
-
-        with mock.patch('flavors.SoupStrainer') as strainer:
-            with mock.patch('flavors.BeautifulSoup') as bs:
-                strainer.return_value = 'SoupStrainer Object'
-                spans = mock.Mock()
-                spans.return_value = mock_flavors
-                bs.return_value = spans
-                
-
-                flavor_info = flavors.extract_flavors(mock_html)
-                self.assertEqual(flavor_info,expected_flavors)
-                strainer.assert_called_with('span', ['flavorhead','flavorheadwhite', 'flavorcap', 'flavorcapwhite'])
-                bs.assert_called_with(mock_html,'html.parser',parse_only='SoupStrainer Object')
-                spans.assert_called_with('span')    
-
-
-
-
-
+                    flavor_info = flavors.extract_flavors(mock_html.read())
+                    for name,caption in expected_flavors.items():
+                        self.assertEqual(expected_flavors[name],flavor_info[name])
 
 
     def test_get_location_flavors(self):
